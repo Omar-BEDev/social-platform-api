@@ -10,7 +10,6 @@ const userSchema = new Schema({
     },
     followers: { type: Number, default: 0 },
     following: { type: Number, default: 0 },
-    role: { type: String, required: true, default: 'user' },
     portfolioImage: { type: String },
     password: { type: String, required: true },
     email: { type: String, required: true, unique: true },
