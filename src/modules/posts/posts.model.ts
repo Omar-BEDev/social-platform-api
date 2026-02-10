@@ -17,8 +17,8 @@ const postSchema = new Schema({
     groupId: { type: Types.ObjectId, default: null }
 }, { timestamps: true });
 
-type IPost = InferSchemaType<typeof postSchema>;
-
+export type IPost = InferSchemaType<typeof postSchema>;
+export interface IPostDocument extends IPost, Document { }
 const Post = model<IPost>('Post', postSchema);
 
 export default Post;
