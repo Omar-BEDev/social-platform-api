@@ -7,7 +7,8 @@ const groupSchema = new Schema({
     slug: { type: String, unique: true, required: true },
     icon: { type: String },
     description: { type: String },
-    ownerId: { type: Types.ObjectId, required: true }
+    ownerId: { type: Types.ObjectId, required: true },
+    accessPost: { type: String, default: 'admin' }
 }, { timestamps: true });
 
 export type IGroup = InferSchemaType<typeof groupSchema>;
