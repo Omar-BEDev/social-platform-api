@@ -5,7 +5,7 @@ import { ApiError } from '../../utils/ApiError';
 export const validatePostData = (req: Request, res: Response, next: NextFunction) => {
   const result = postSchema.safeParse(req.body);
   if (!result.success) {
-    return next(new ApiError(result.error.message, 400));
+    throw new ApiError(result.error.message, 400);
   }
   next();
 };
@@ -13,7 +13,7 @@ export const validatePostData = (req: Request, res: Response, next: NextFunction
 export const validatePostParams = (req: Request, res: Response, next: NextFunction) => {
   const result = postParamsSchema.safeParse(req.params);
   if (!result.success) {
-    return next(new ApiError(result.error.message, 400));
+    throw new ApiError(result.error.message, 400);
   }
   next();
 };
@@ -21,7 +21,7 @@ export const validatePostParams = (req: Request, res: Response, next: NextFuncti
 export const validatePostContent = (req: Request, res: Response, next: NextFunction) => {
     const result = postContentSchema.safeParse(req.body);
     if (!result.success) {
-        return next(new ApiError(result.error.message, 400));
+        throw new ApiError(result.error.message, 400);
     }
     next();
 }
