@@ -2,8 +2,9 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { ApiError } from '../utils/ApiError';
+import { AuthRequest, IUserPayload } from '../utils/payload.interface';
 
-export const authUser = (req: Request, res: Response, next: NextFunction) => {
+export const authUser = (req: AuthRequest, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
@@ -21,7 +22,7 @@ export const authUser = (req: Request, res: Response, next: NextFunction) => {
     if (!decode) {
       throw new ApiError('Unauthorized: Invalid token',401);
     }
-    res.json(decode)
+    req.user = decode as IUserPayload;
     next();
   
 };
