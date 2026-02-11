@@ -18,3 +18,7 @@ export const postSchema = z.object({
 export const postParamsSchema = z.object({
   id: objectIdSchema,
 });
+
+export const postContentSchema = z.object({
+  content: z.string().min(1).max(2000),
+});

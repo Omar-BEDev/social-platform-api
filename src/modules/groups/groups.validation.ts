@@ -5,7 +5,7 @@ import { ApiError } from '../../utils/ApiError';
 export const validateGroupParams = (req: Request, res: Response, next: NextFunction) => {
   const result = groupParamsSchema.safeParse(req.params);
   if (!result.success) {
-    return next(new ApiError(result.error.message, 400));
+    throw new ApiError(result.error.message, 400);
   }
   next();
 };
@@ -13,7 +13,7 @@ export const validateGroupParams = (req: Request, res: Response, next: NextFunct
 export const validateGroupPostData = (req: Request, res: Response, next: NextFunction) => {
   const result = groupPostSchema.safeParse(req.body);
   if (!result.success) {
-    return next(new ApiError(result.error.message, 400));
+    throw new ApiError(result.error.message, 400);
   }
   next();
 };
