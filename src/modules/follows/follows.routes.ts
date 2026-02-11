@@ -1,11 +1,13 @@
+
 import { Router } from 'express';
-import { authUser } from '../../middleware/auth.middleware';
 import { validateFollowParams } from './follows.validation';
-import { followUser, infollowUser } from './follows.controller';
+import { followUser, unfollowUser } from './follows.controller';
+import { authUser } from '../../middleware/auth.middleware';
 
 const router = Router();
 
-router.post("/:userId/follow");
-router.post("/:userId/unfollow");
+// follows route (api/follows)
+router.post("/:userId/follow",authUser,validateFollowParams,followUser)
+router.post("/:userId/unfollow",authUser,validateFollowParams,unfollowUser)
 
 export default router;

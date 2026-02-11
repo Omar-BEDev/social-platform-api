@@ -1,13 +1,15 @@
+
 import { Router } from 'express';
-import { authUser } from '../../middleware/auth.middleware';
 import { validatePostData, validatePostParams, validatePostContent } from './posts.validation';
-import { createpost, deletePost, updatePost, getUserPosts } from './posts.controller';
+import { createPost, deletePost, updatePost, getUserPosts } from './posts.controller';
+import { authUser } from '../../middleware/auth.middleware';
 
 const router = Router();
 
-router.post("/");
-router.delete("/:postId");
-router.put("/:postId");
-router.get("/:userId/posts");
+//posts routes (api/posts)
+router.post("/",authUser,validatePostData,createPost)
+router.delete("/:postId",authUser,validatePostParams,deletePost)
+router.put("/:postId",authUser,validatePostParams,validatePostContent,updatePost)
+router.get("/:userId/posts",authUser,validatePostParams,getUserPosts)
 
 export default router;
