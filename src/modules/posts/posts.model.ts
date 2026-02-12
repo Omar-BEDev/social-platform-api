@@ -14,11 +14,12 @@ const postSchema = new Schema({
         validate: (v: string[]) => Array.isArray(v) && v.length >= 1 && v.length <= 3
     },
     likesCount: { type: Number, default: 0 },
-    groupId: { type: Types.ObjectId, default: null }
+    groupId: { type: Types.ObjectId, default: null },
+    createdAt : { type: Date, default: Date.now }
 }, { timestamps: true });
 
 export type IPost = InferSchemaType<typeof postSchema>;
 export interface IPostDocument extends IPost, Document { }
-const Post = model<IPost>('Post', postSchema);
+export const Post = model<IPost>('Post', postSchema);
 
 export default Post;

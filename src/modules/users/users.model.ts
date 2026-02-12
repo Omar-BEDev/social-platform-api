@@ -25,6 +25,6 @@ const userSchema = new Schema({
 
 export type IUser = InferSchemaType<typeof userSchema>;
 export interface IUserDocument extends IUser, Document { }
-const User = model<IUser>('User', userSchema);
+export const User = model<IUser>('User', userSchema);
 
 export default User;

@@ -10,6 +10,6 @@ const groupMemberSchema = new Schema({
 
 export type IGroupMember = InferSchemaType<typeof groupMemberSchema>;
 export interface IGroupMemberDocument extends IGroupMember, Document { }
-const GroupMember = model<IGroupMemberDocument>('GroupMember', groupMemberSchema);
+export const GroupMember = model<IGroupMemberDocument>('GroupMember', groupMemberSchema);
 
 export default GroupMember;
