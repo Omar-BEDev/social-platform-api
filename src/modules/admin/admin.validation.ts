@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { adminParamsSchema, adminGroupParamsSchema } from './admin.schema';
 import { ApiError } from '../../utils/ApiError';
-import { AuthRequest } from '../../utils/payload.interface';
+import { AuthRequest } from '../../utils/payload';
 
 export const validateAdminParams = (req: Request, res: Response, next: NextFunction) => {
   const result = adminParamsSchema.safeParse(req.params);
