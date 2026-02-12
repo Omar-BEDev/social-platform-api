@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { ApiError } from '../utils/ApiError';
-import { AuthRequest, IUserPayload } from '../utils/payload.interface';
+import { AuthRequest, IUserPayload } from '../utils/payload';
 
 export const authUser = (req: AuthRequest, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;

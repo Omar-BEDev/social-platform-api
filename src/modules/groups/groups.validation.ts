@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { groupParamsSchema, groupPostSchema } from './groups.schema';
+import { groupParamsSchema, groupPostSchema, groupReqbodySchema } from './groups.schema';
 import { ApiError } from '../../utils/ApiError';
 
 export const validateGroupParams = (req: Request, res: Response, next: NextFunction) => {
@@ -17,3 +17,11 @@ export const validateGroupPostData = (req: Request, res: Response, next: NextFun
   }
   next();
 };
+
+export const validateGroupReqbody = (req: Request, res: Response, next: NextFunction) => {
+    const result = groupReqbodySchema.safeParse(req.body);
+    if(!result.success) {
+        throw new ApiError(result.error.message, 400);
+    }
+    next();
+}

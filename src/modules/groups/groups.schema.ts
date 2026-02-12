@@ -18,3 +18,8 @@ export const groupPostSchema = z.object({
   frameworkTag: z.array(z.string()).max(3).optional(),
   groupId: objectIdSchema,
 });
+
+export const groupReqbodySchema = z.object({
+    name: z.string(),
+    description: z.string(),
+});
