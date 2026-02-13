@@ -51,7 +51,7 @@ export const createGroup = async (groupData : IGroup, userId: Types.ObjectId) : 
 }
 export const createGroupPost = async (
     groupId: string,
-    authorId: string, 
+    authorId: Types.ObjectId, 
     content: string, 
     languageTag: string[], 
     frameworkTag: string[] | undefined
@@ -70,7 +70,7 @@ export const createGroupPost = async (
     await newPost.save();
     return newPost;
 }
-export const getGroupPosts = async (groupId: string, userId: string) => {
+export const getGroupPosts = async (groupId: string, userId: Types.ObjectId) => {
     const isMember = await GroupMember.findOne({ groupId, userId });
     if (!isMember) {
         throw new ApiError('You are not a member of this group',403);
