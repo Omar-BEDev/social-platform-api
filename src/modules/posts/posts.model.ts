@@ -16,7 +16,7 @@ const postSchema = new Schema({
     likesCount: { type: Number, default: 0 },
     groupId: { type: Types.ObjectId, default: null },
     createdAt : { type: Date, default: Date.now }
-}, { timestamps: true });
+});
 
 export type IPost = InferSchemaType<typeof postSchema>;
 export interface IPostDocument extends IPost, Document { }

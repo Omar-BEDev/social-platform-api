@@ -2,7 +2,7 @@ import { Schema, model, InferSchemaType, Document } from 'mongoose';
 
 const userSchema = new Schema({
     name: { type: String, required: true },
-    nickname: { type: String, required: true, unique: true },
+    nickname: { type: String, required: true },
     birthday: { type: Date, required: true },
     address: {
         city: { type: String },
@@ -21,7 +21,7 @@ const userSchema = new Schema({
         type: [String],
         validate: (v: string[]) => Array.isArray(v) && v.length <= 3
     }
-}, { timestamps: true });
+});
 
 export type IUser = InferSchemaType<typeof userSchema>;
 export interface IUserDocument extends IUser, Document { }
