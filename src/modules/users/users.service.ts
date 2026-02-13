@@ -5,20 +5,30 @@ import { GroupMember } from '../groups/groupMembers.model';
 import { ApiError } from '../../utils/ApiError';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
+import { Types } from 'mongoose';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_default_secret';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 export const makeUserData = (body: any) =>{
-    const { name, email, password, profilePicture, bio, location, website, interests } = body;
+    const { 
+        name, 
+        email, 
+        password, 
+        nickname, 
+        birthday,
+        language,
+        framework,
+        portfolioImage
+    } = body;
 	return {
         name,
+        nickname,
         email,
         password,
-        profilePicture: profilePicture || '',
-        bio: bio || '',
-        location: location || '',
-        website: website || '',
-        interests: interests || [],
+        birthday,
+        language,
+        framework,
+        portfolioImage,
         followers: 0,
         following: 0,
     } 
@@ -27,7 +37,7 @@ export const makeUserData = (body: any) =>{
 export const signup = async (userData: IUser) => {
 	const user = new User(userData);
     await user.save();
-    const token = jwt.sign({ _id: user._id }, JWT_SECRET);
+    const token = jwt.sign({ _id: user._id }, JWT_SECRET as string);
     return { message: "User created successfully", token };
 } 
 
@@ -40,11 +50,11 @@ export const login = async (body: Pick<IUser, 'email' | 'password'>) => {
     if (!isMatch) {
         throw new ApiError("Invalid credentials", 401);
     }
-    const token = jwt.sign({ _id: user._id }, JWT_SECRET);
+    const token = jwt.sign({ _id: user._id }, JWT_SECRET as string);
     return { message: "Logged in successfully", token };
 }
 
-export const feed= async (userId : string) => {
+export const feed= async (userId : Types.ObjectId) => {
     
     const follows = await Follow.find({followerId : userId})
     .select("followingId")
