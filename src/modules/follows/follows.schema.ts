@@ -10,3 +10,8 @@ export const objectIdSchema = z.string().refine((val) => {
 export const followParamsSchema = z.object({
   id: objectIdSchema,
 });
+
+export const authRequestSchema = z.object({
+    id: objectIdSchema,
+    role: z.string(),
+});
