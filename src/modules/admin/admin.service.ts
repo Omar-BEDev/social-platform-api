@@ -12,7 +12,7 @@ export const banUser = async (groupId: Types.ObjectId,userId : Types.ObjectId) =
     }
     groupMember.isBanned = true
     await groupMember.save()
-    return groupMember
+    return {message : "User banned successfully"}
 } 
 
 export const changeRole = async (groupId : Types.ObjectId, userId: Types.ObjectId) => {
@@ -22,7 +22,7 @@ export const changeRole = async (groupId : Types.ObjectId, userId: Types.ObjectI
     }
     groupMember.role = "admin"
     await groupMember.save()
-    return groupMember
+    return {message : "Role changed successfully"}
 }
  
 export const changePostAccess = async (groupId : Types.ObjectId) => {
@@ -32,5 +32,5 @@ export const changePostAccess = async (groupId : Types.ObjectId) => {
     }
     group.accessPost = "admin"
     await group.save()
-    return group
+    return {message : "Post access changed successfully"}
 }
