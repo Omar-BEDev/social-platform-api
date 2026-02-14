@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { authUser } from '../middleware/auth.middleware';
-import { creationLimiter } from '../middleware/rate-limit';
+import { authUser } from '../../middleware/auth.middleware';
+import { creationLimiter } from '../../middleware/rate-limit';
 import { createComment, updateComment, deleteComment, getComments } from './comments.controller';
 import { validationCommentContent, validationCommentParams } from './comments.validation';
 

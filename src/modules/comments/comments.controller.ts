@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import * as commentService from './comments.service';
-import { AuthRequest } from '../utils/payload';
-import { ApiError } from '../utils/ApiError';
+import { AuthRequest } from '../../utils/payload';
+import { ApiError } from '../../utils/ApiError';
 
 export const createComment = async (req: AuthRequest, res: Response) => {
     if (!req.user) throw new ApiError('User not authenticated',403)
