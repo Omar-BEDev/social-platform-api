@@ -16,6 +16,8 @@ export const userSchema = z.object({
   language: z.array(z.string()).max(6).optional(),
   framework: z.array(z.string()).max(3).optional(),
 });
+export type signUpBody = z.infer<typeof userSchema>;
+
 
 export const loginSchema = z.object({
   email: z.string().email(),
