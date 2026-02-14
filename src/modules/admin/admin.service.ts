@@ -3,6 +3,7 @@ import GroupMember from "../groups/groupMembers.model";
 import Group from "../groups/groups.model";
 import { ApiError } from "../../utils/ApiError";
 import { Types } from "mongoose";
+import Comment from "../comments/comments.model";
 
 
 export const banUser = async (groupId: Types.ObjectId,userId : Types.ObjectId) => {
@@ -33,4 +34,12 @@ export const changePostAccess = async (groupId : Types.ObjectId) => {
     group.accessPost = "admin"
     await group.save()
     return {message : "Post access changed successfully"}
+}
+
+export const deleteGroupComment = async (groupId: string, authorId: string) => {
+    const comment = await Comment.findOneAndDelete({ groupId: groupId, authorId: authorId });
+    if(!comment){
+        throw new ApiError("Comment not found",404)
+    }
+    return {message : "Comment deleted successfully"}
 }

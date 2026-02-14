@@ -15,3 +15,8 @@ export const adminParamsSchema = z.object({
 export const adminGroupParamsSchema = z.object({
     groupId: objectIdSchema,
 });
+
+export const adminCommentParamsSchema = z.object({
+    authorId: objectIdSchema,
+    groupId: objectIdSchema,
+});
