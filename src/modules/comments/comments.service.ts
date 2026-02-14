@@ -1,7 +1,7 @@
 import Comment, { IComment } from './comments.model';
-import {ApiError} from '../utils/ApiError';
+import {ApiError} from '../../utils/ApiError';
 import { Types } from 'mongoose';
-import Post from '../modules/posts/posts.model';
+import Post from '../posts/posts.model';
 
 // comments services ("api/comments")
 export const createComment = async (authorId: Types.ObjectId, postId: string, content: string, groupId?: string) => {
