@@ -72,7 +72,7 @@ export const feed= async (userId : Types.ObjectId) => {
             {groupId : {$in : groupsIds}}
         ]
     })
-    .sort({createAt : -1})
+    .sort({createdAt : -1})
     .limit(20)
     return posts;
     }
