@@ -25,7 +25,7 @@ const commentSchema = new Schema(
         },
     },
 );
-
+commentSchema.index({ postId: 1, createdAt: -1 }); 
 export type IComment = InferSchemaType<typeof commentSchema>;
 const Comment = model<IComment>('Comment', commentSchema);
 export default Comment;
