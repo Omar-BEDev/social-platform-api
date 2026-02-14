@@ -6,6 +6,7 @@ import { ApiError } from '../../utils/ApiError';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 import { Types } from 'mongoose';
+import { signUpBody } from './users.schema';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
