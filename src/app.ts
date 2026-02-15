@@ -32,6 +32,6 @@ app.use("/api/posts", postRoutes);
 app.use("/api/follows", followRoutes);
 app.use("/api/groups", groupRoutes);
 app.use(handleErrors);
-app.use("/docs", authUser, swaggerui.serve, swaggerui.setup(swaggerDocument));
+app.use("/docs",  swaggerui.serve, swaggerui.setup(swaggerDocument));
 
 export default app;
