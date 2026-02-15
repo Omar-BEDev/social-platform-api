@@ -1,78 +1,90 @@
-import Comment, { IComment } from './comments.model';
-import {ApiError} from '../../utils/ApiError';
-import { Types } from 'mongoose';
-import Post from '../posts/posts.model';
-import { INotification } from '../notifications/notifications.model';
-import { sendAndSaveNotifacation } from '../notifications/notifications.service';
+import Comment, { IComment } from "./comments.model";
+import { ApiError } from "../../utils/ApiError";
+import { Types } from "mongoose";
+import Post from "../posts/posts.model";
+import { INotification } from "../notifications/notifications.model";
+import { sendAndSaveNotifacation } from "../notifications/notifications.service";
 
 // comments services ("api/comments")
-export const createComment = async (authorId: Types.ObjectId, postId: string, content: string, groupId?: string) => {
-    const recipient = await Post.findOne({_id : postId })
+export const createComment = async (
+  authorId: Types.ObjectId,
+  postId: string,
+  content: string,
+  groupId?: string,
+) => {
+  const recipient = await Post.findOne({ _id: postId })
     .select("authorId")
     .lean();
 
-    if (!recipient) {
-        throw new ApiError('Recipient not found', 404);
-    }
+  if (!recipient) {
+    throw new ApiError("Recipient not found", 404);
+  }
 
-    const newComment: IComment = {
-        authorId,
-        postId,
-        content,
-        recipientId: recipient.authorId.toString()
-    };
+  const newComment: IComment = {
+    authorId,
+    postId,
+    content,
+    recipientId: recipient.authorId.toString(),
+  };
 
-    if (groupId) {
-        newComment.groupId = groupId;
-    }
+  if (groupId) {
+    newComment.groupId = groupId;
+  }
 
-    const comment = new Comment(newComment);
-    await comment.save();
-    const notificationBody : INotification = {
-        userId : authorId,
-        recipientId : comment.recipientId,
-        type : 'follow',
-        content : "new follower!",
-        createdAt : new Date()
-    } 
-    await sendAndSaveNotifacation(notificationBody)
-    return comment;
+  const comment = new Comment(newComment);
+  await comment.save();
+  const notificationBody: INotification = {
+    userId: authorId,
+    recipientId: comment.recipientId,
+    type: "follow",
+    content: "new follower!",
+    createdAt: new Date(),
+  };
+  await sendAndSaveNotifacation(notificationBody);
+  return comment;
 };
 
-export const updateComment = async (userId: string, postId: string, newContent: string) => {
-    const comment = await Comment.findOne({ postId });
+export const updateComment = async (
+  userId: string,
+  postId: string,
+  newContent: string,
+) => {
+  const comment = await Comment.findOne({ postId });
 
-    if (!comment) {
-        throw new ApiError('Comment not found', 404);
-    }
+  if (!comment) {
+    throw new ApiError("Comment not found", 404);
+  }
 
-    if (comment.authorId.toString() !== userId) {
-        throw new ApiError('You are not authorized to update this comment', 403);
-    }
+  if (comment.authorId.toString() !== userId) {
+    throw new ApiError("You are not authorized to update this comment", 403);
+  }
 
-    comment.content = newContent;
-    await comment.save();
+  comment.content = newContent;
+  await comment.save();
 
-    return { message: 'Comment updated successfully' };
+  return { message: "Comment updated successfully" };
 };
 
 export const deleteComment = async (userId: string, postId: string) => {
-    const comment = await Comment.findOne({ postId });
+  const comment = await Comment.findOne({ postId });
 
-    if (!comment) {
-        throw new ApiError('Comment not found', 404);
-    }
+  if (!comment) {
+    throw new ApiError("Comment not found", 404);
+  }
 
-    if (comment.authorId.toString() !== userId && comment.recipientId !== userId) {
-        throw new ApiError('You are not authorized to delete this comment', 403);
-    }
+  if (
+    comment.authorId.toString() !== userId &&
+    comment.recipientId !== userId
+  ) {
+    throw new ApiError("You are not authorized to delete this comment", 403);
+  }
 
-    await Comment.deleteOne({ postId });
+  await Comment.deleteOne({ postId });
 
-    return { message: 'Comment deleted successfully' };
+  return { message: "Comment deleted successfully" };
 };
 
 export const getComments = async (postId: string) => {
-    const comments = await Comment.find({ postId }).limit(20);
-    return comments;
+  const comments = await Comment.find({ postId }).limit(20);
+  return comments;
 };

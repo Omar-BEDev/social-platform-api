@@ -1,11 +1,14 @@
-import { z } from 'zod';
-import { Types } from 'mongoose';
+import { z } from "zod";
+import { Types } from "mongoose";
 
-export const objectIdSchema = z.string().refine((val) => {
+export const objectIdSchema = z.string().refine(
+  (val) => {
     return Types.ObjectId.isValid(val);
-}, {
+  },
+  {
     message: "Invalid ObjectId",
-});
+  },
+);
 
 export const groupParamsSchema = z.object({
   id: objectIdSchema,
@@ -20,6 +23,6 @@ export const groupPostSchema = z.object({
 });
 
 export const groupReqbodySchema = z.object({
-    name: z.string(),
-    description: z.string(),
+  name: z.string(),
+  description: z.string(),
 });
