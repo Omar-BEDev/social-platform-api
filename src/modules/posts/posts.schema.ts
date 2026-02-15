@@ -1,11 +1,14 @@
-import { z } from 'zod';
-import { Types } from 'mongoose';
+import { z } from "zod";
+import { Types } from "mongoose";
 
-export const objectIdSchema = z.string().refine((val) => {
+export const objectIdSchema = z.string().refine(
+  (val) => {
     return Types.ObjectId.isValid(val);
-}, {
+  },
+  {
     message: "Invalid ObjectId",
-});
+  },
+);
 
 export const postSchema = z.object({
   authorId: objectIdSchema,
