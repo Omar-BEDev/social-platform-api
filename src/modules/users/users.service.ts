@@ -66,10 +66,13 @@ export const feed = async (userId: Types.ObjectId) => {
     .lean();
   const groupsIds = groups.map((g) => g.groupId);
 
-  const posts = await Post.find({
-    $or: [{ authorId: { $in: followsIds } }, { groupId: { $in: groupsIds } }],
-  })
-    .sort({ createAt: -1 })
-    .limit(20);
-  return posts;
-};
+    const posts = await Post.find({
+        $or : [
+            {authorId : {$in : followsIds}},
+            {groupId : {$in : groupsIds}}
+        ]
+    })
+    .sort({createdAt : -1})
+    .limit(20)
+    return posts;
+    }

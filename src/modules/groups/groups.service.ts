@@ -75,13 +75,28 @@ export const getGroupPosts = async (
   groupId: string,
   userId: Types.ObjectId,
 ) => {
-  const isMember = await GroupMember.findOne({ groupId, userId });
-  if (!isMember) {
-    throw new ApiError("You are not a member of this group", 403);
-  }
-  if (isMember.isBanned) {
-    throw new ApiError("You are banned from this group", 403);
-  }
-  const posts = await Post.find({ groupTag: groupId });
-  return posts;
-};
+    const isMember = await GroupMember.findOne({ groupId, memberId: authorId });
+    if (!isMember) {
+        throw new ApiError('You are not a member of this group',403);
+    }
+    const newPost = new Post({
+        authorId,
+        content,
+        languageTag,
+        frameworkTag,
+        groupTag: groupId,
+    });
+    await newPost.save();
+    return newPost;
+}
+export const getGroupPosts = async (groupId: string, userId: Types.ObjectId) => {
+    const isMember = await GroupMember.findOne({ groupId, memberId });
+    if (!isMember) {
+        throw new ApiError('You are not a member of this group',403);
+    }
+    if (isMember.isBanned) {
+        throw new ApiError( 'You are banned from this group',403);
+    }
+    const posts = await Post.find({ groupTag: groupId });
+    return posts;
+}
