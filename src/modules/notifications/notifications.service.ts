@@ -19,9 +19,11 @@ export const sendAndSaveNotifacation = async (data: INotification) => {
 export const getNotifications = async (userId: Types.ObjectId) => {
   const notifications = await Notification.find({
     recipientId: userId.toString(),
-    createdAt: -1,
-  }).limit(30);
-  const usersMakeNotifications = [...notifications].map((n) => n.userId);
+  })
+    .sort({createdAt: -1})
+    .limit(30)
+    .lean();
+  const usersMakeNotifications = [...new Set(notifications.map((n) => n.userId.toString()))];
   const names = await User.find({ _id: { $in: usersMakeNotifications } })
     .select("name")
     .lean();
