@@ -3,7 +3,7 @@ import Follow from "./follows.model";
 import User from "../users/users.model";
 import { Types } from "mongoose";
 import { INotification } from "../notifications/notifications.model";
-import { sendAndSaveNotifacation } from "../notifications/notifications.service";
+import { sendAndSaveNotification } from "../notifications/notifications.service";
 
 export const follow = async (
   currentUserId: Types.ObjectId,
@@ -37,7 +37,7 @@ export const follow = async (
     content: "new follower!",
     createdAt: new Date(),
   };
-  await sendAndSaveNotifacation(notificationBody);
+  await sendAndSaveNotification(notificationBody);
   return { message: "Successfully followed user" };
 };
 
