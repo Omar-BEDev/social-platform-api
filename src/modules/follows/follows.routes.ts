@@ -20,5 +20,5 @@ router.post(
   creationLimiter,
   unfollowUser,
 );
-router.post("/", authUser, validateUserId, getFollows);
+router.get("/", authUser, validateUserId, getFollows);
 export default router;
