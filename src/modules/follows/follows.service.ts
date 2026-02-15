@@ -2,6 +2,9 @@ import { ApiError } from '../../utils/ApiError';
 import Follow from './follows.model';
 import User from '../users/users.model';
 import { Types } from 'mongoose';
+import { INotification } from '../notifications/notifications.model';
+import { sendAndSaveNotifacation } from '../notifications/notifications.service';
+
 
 export const follow = async (currentUserId: Types.ObjectId, targetUserId: string) => {
     const targetUserMongoId = new Types.ObjectId(targetUserId);
@@ -19,7 +22,14 @@ export const follow = async (currentUserId: Types.ObjectId, targetUserId: string
 
     await User.findByIdAndUpdate(currentUserId, { $inc: { following: 1 } });
     await User.findByIdAndUpdate(targetUserId, { $inc: { followers: 1 } });
-
+    const notificationBody : INotification = {
+        userId : currentUserId,
+        recipientId : targetUserId,
+        type : 'follow',
+        content : "new follower!",
+        createdAt : new Date()
+    } 
+    await sendAndSaveNotifacation(notificationBody)
     return { message: 'Successfully followed user' };
 };
 

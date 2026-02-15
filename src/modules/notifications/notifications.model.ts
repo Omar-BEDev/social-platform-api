@@ -12,6 +12,6 @@ notificationSchema.index(
      {createdAt: -1},
     {expireAfterSeconds: 60 * 60 * 24}
 )
-export type INotification = InferSchemaType<typeof notificationSchema> & Document;
+export type INotification = InferSchemaType<typeof notificationSchema>;
 
 export const Notification = model<INotification>('Notification', notificationSchema);

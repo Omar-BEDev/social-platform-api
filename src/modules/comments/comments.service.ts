@@ -2,6 +2,8 @@ import Comment, { IComment } from './comments.model';
 import {ApiError} from '../../utils/ApiError';
 import { Types } from 'mongoose';
 import Post from '../posts/posts.model';
+import { INotification } from '../notifications/notifications.model';
+import { sendAndSaveNotifacation } from '../notifications/notifications.service';
 
 // comments services ("api/comments")
 export const createComment = async (authorId: Types.ObjectId, postId: string, content: string, groupId?: string) => {
@@ -26,6 +28,14 @@ export const createComment = async (authorId: Types.ObjectId, postId: string, co
 
     const comment = new Comment(newComment);
     await comment.save();
+    const notificationBody : INotification = {
+        userId : authorId,
+        recipientId : comment.recipientId,
+        type : 'follow',
+        content : "new follower!",
+        createdAt : new Date()
+    } 
+    await sendAndSaveNotifacation(notificationBody)
     return comment;
 };
 
