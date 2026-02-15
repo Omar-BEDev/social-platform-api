@@ -5,7 +5,7 @@ import { INotification } from "./notifications.model";
 import { Notification } from "./notifications.model";
 import { Types } from "mongoose";
 
-export const sendAndSaveNotifacation = async (data: INotification) => {
+export const sendAndSaveNotification = async (data: INotification) => {
   const newNotification = await Notification.create(data);
 
   const io = getIO();
