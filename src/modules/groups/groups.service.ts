@@ -66,7 +66,7 @@ export const createGroupPost = async (
     content,
     languageTag,
     frameworkTag,
-    groupTag: groupId,
+    groupId,
   });
   await newPost.save();
   return newPost;
