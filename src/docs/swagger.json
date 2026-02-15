@@ -1,0 +1,411 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Social Platform API",
+    "version": "1.0.0",
+    "description": "API Documentation for the Social Platform application built with Express, TypeScript, and MongoDB."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local Development Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "UserSignup": {
+        "type": "object",
+        "required": ["name", "nickname", "email", "password", "birthday"],
+        "properties": {
+          "name": { "type": "string" },
+          "nickname": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string", "minLength": 8, "description": "Must contain uppercase, lowercase, number, and special character." },
+          "birthday": { "type": "string", "format": "date" },
+          "language": { "type": "array", "items": { "type": "string" }, "maxItems": 6 },
+          "framework": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+          "address": {
+            "type": "object",
+            "properties": {
+              "city": { "type": "string" },
+              "country": { "type": "string" }
+            }
+          },
+          "portfolioImage": { "type": "string" }
+        }
+      },
+      "UserLogin": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string" }
+        }
+      },
+      "PostCreate": {
+        "type": "object",
+        "required": ["content", "languageTag"],
+        "properties": {
+          "content": { "type": "string", "maxLength": 2000 },
+          "languageTag": { "type": "array", "items": { "type": "string" }, "minItems": 1, "maxItems": 6 },
+          "frameworkTag": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+          "groupId": { "type": "string", "description": "Optional Group ID" }
+        }
+      },
+      "GroupCreate": {
+        "type": "object",
+        "required": ["name", "description"],
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "icon": { "type": "string" }
+        }
+      },
+      "GroupPostCreate": {
+        "type": "object",
+        "required": ["content", "languageTag"],
+        "properties": {
+          "content": { "type": "string", "maxLength": 2000 },
+          "languageTag": { "type": "array", "items": { "type": "string" }, "minItems": 1, "maxItems": 6 },
+          "frameworkTag": { "type": "array", "items": { "type": "string" }, "maxItems": 3 }
+        }
+      },
+      "CommentCreate": {
+        "type": "object",
+        "required": ["content"],
+        "properties": {
+          "content": { "type": "string", "maxLength": 500 }
+        }
+      }
+    }
+  },
+  "tags": [
+    { "name": "Users", "description": "User management and authentication" },
+    { "name": "Posts", "description": "Post management" },
+    { "name": "Follows", "description": "Follow/Unfollow logic" },
+    { "name": "Groups", "description": "Group management and posts" },
+    { "name": "Comments", "description": "Post comments" },
+    { "name": "Admin", "description": "Group administration" },
+    { "name": "Notifications", "description": "User notifications" }
+  ],
+  "paths": {
+    "/api/users/signup": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Register a new user",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserSignup" } } }
+        },
+        "responses": {
+          "201": { "description": "User created successfully" },
+          "400": { "description": "Validation error" }
+        }
+      }
+    },
+    "/api/users/login": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Login user",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserLogin" } } }
+        },
+        "responses": {
+          "200": { "description": "Logged in successfully", "content": { "application/json": { "schema": { "type": "object", "properties": { "token": { "type": "string" } } } } } },
+          "401": { "description": "Invalid credentials" }
+        }
+      }
+    },
+    "/api/users/feed": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get user feed (Followed users & Groups)",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Feed retrieved successfully" },
+          "403": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/posts": {
+      "post": {
+        "tags": ["Posts"],
+        "summary": "Create a new post",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PostCreate" } } }
+        },
+        "responses": {
+          "201": { "description": "Post created successfully" },
+          "400": { "description": "Validation error" }
+        }
+      }
+    },
+    "/api/posts/{postId}": {
+      "put": {
+        "tags": ["Posts"],
+        "summary": "Update a post",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "postId", "schema": { "type": "string" }, "required": true }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "type": "object", "properties": { "content": { "type": "string" } } } } }
+        },
+        "responses": {
+          "200": { "description": "Post updated successfully" }
+        }
+      },
+      "delete": {
+        "tags": ["Posts"],
+        "summary": "Delete a post",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "postId", "schema": { "type": "string" }, "required": true }
+        ],
+        "responses": {
+          "204": { "description": "Post deleted" }
+        }
+      }
+    },
+    "/api/posts/{userId}/posts": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "Get posts by a specific user",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "userId", "schema": { "type": "string" }, "required": true }
+        ],
+        "responses": {
+          "200": { "description": "List of posts" }
+        }
+      }
+    },
+    "/api/follows/{userId}/follow": {
+      "post": {
+        "tags": ["Follows"],
+        "summary": "Follow a user",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "userId", "schema": { "type": "string" }, "required": true }
+        ],
+        "responses": {
+          "201": { "description": "Successfully followed user" }
+        }
+      }
+    },
+    "/api/follows/{userId}/unfollow": {
+      "post": {
+        "tags": ["Follows"],
+        "summary": "Unfollow a user",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "userId", "schema": { "type": "string" }, "required": true }
+        ],
+        "responses": {
+          "200": { "description": "Successfully unfollowed user" }
+        }
+      }
+    },
+    "/api/follows": {
+      "post": {
+        "tags": ["Follows"],
+        "summary": "Get followers and following list",
+        "description": "Note: This is a POST request in the code implementation, though it retrieves data.",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "List of followers and following" }
+        }
+      }
+    },
+    "/api/groups": {
+      "post": {
+        "tags": ["Groups"],
+        "summary": "Create a new group",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/GroupCreate" } } }
+        },
+        "responses": {
+          "201": { "description": "Group created" }
+        }
+      }
+    },
+    "/api/groups/{groupId}": {
+      "post": {
+        "tags": ["Groups"],
+        "summary": "Join a group",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "groupId", "schema": { "type": "string" }, "required": true }
+        ],
+        "responses": {
+          "200": { "description": "Action performed (Implementation empty in provided code)" }
+        }
+      }
+    },
+    "/api/groups/{groupId}/post": {
+      "post": {
+        "tags": ["Groups"],
+        "summary": "Create a post inside a group",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "groupId", "schema": { "type": "string" }, "required": true }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/GroupPostCreate" } } }
+        },
+        "responses": {
+          "201": { "description": "Group post created" }
+        }
+      }
+    },
+    "/api/groups/{groupId}/posts": {
+      "get": {
+        "tags": ["Groups"],
+        "summary": "Get posts of a group",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "groupId", "schema": { "type": "string" }, "required": true }
+        ],
+        "responses": {
+          "200": { "description": "List of group posts" }
+        }
+      }
+    },
+    "/api/admin/{groupId}/{userId}/ban": {
+      "put": {
+        "tags": ["Admin"],
+        "summary": "Ban a user from a group (Admin only)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "groupId", "required": true, "schema": { "type": "string" } },
+          { "in": "path", "name": "userId", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "User banned successfully" }
+        }
+      }
+    },
+    "/api/admin/{groupId}/{userId}/role": {
+      "put": {
+        "tags": ["Admin"],
+        "summary": "Change member role to admin (Admin only)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "groupId", "required": true, "schema": { "type": "string" } },
+          { "in": "path", "name": "userId", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Role changed successfully" }
+        }
+      }
+    },
+    "/api/admin/{groupId}": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Change post access settings for group",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "groupId", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Post access changed successfully" }
+        }
+      }
+    },
+    "/api/admin/{authorId}/{groupId}": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Delete a group comment (Admin only)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "authorId", "required": true, "schema": { "type": "string" } },
+          { "in": "path", "name": "groupId", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Comment deleted successfully" }
+        }
+      }
+    },
+    "/api/comments/{postId}": {
+      "get": {
+        "tags": ["Comments"],
+        "summary": "Get comments for a post",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "postId", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "List of comments" }
+        }
+      },
+      "post": {
+        "tags": ["Comments"],
+        "summary": "Create a comment on a post",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "postId", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommentCreate" } } }
+        },
+        "responses": {
+          "201": { "description": "Comment created" }
+        }
+      },
+      "put": {
+        "tags": ["Comments"],
+        "summary": "Update a comment",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "postId", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommentCreate" } } }
+        },
+        "responses": {
+          "200": { "description": "Comment updated" }
+        }
+      }
+    },
+    "/api/comments/{postId}/{groupId}": {
+      "delete": {
+        "tags": ["Comments"],
+        "summary": "Delete a comment",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "postId", "required": true, "schema": { "type": "string" } },
+          { "in": "path", "name": "groupId", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Comment deleted" }
+        }
+      }
+    },
+    "/api/notifications": {
+      "get": {
+        "tags": ["Notifications"],
+        "summary": "Get user notifications",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "List of notifications" }
+        }
+      }
+    }
+  }
+}
