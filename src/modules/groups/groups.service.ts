@@ -57,7 +57,7 @@ export const createGroupPost = async (
   languageTag: string[],
   frameworkTag: string[] | undefined,
 ) => {
-  const isMember = await GroupMember.findOne({ groupId, userId: authorId });
+  const isMember = await GroupMember.findOne({ groupId, memberId: authorId });
   if (!isMember) {
     throw new ApiError("You are not a member of this group", 403);
   }
@@ -73,7 +73,7 @@ export const createGroupPost = async (
 };
 
 export const getGroupPosts = async (groupId: string, userId: Types.ObjectId) => {
-    const isMember = await GroupMember.findOne({ groupId, memberId });
+    const isMember = await GroupMember.findOne({ groupId, memberId : userId });
     if (!isMember) {
         throw new ApiError('You are not a member of this group',403);
     }
