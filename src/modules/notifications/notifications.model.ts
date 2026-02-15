@@ -7,7 +7,7 @@ const notificationSchema = new Schema({
   content: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });
-notificationSchema.index({ recepientId: 1, createdAt: -1 });
+notificationSchema.index({ recipientId: 1, createdAt: -1 });
 notificationSchema.index(
   { createdAt: -1 },
   { expireAfterSeconds: 60 * 60 * 24 },
