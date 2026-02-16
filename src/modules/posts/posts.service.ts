@@ -58,5 +58,6 @@ export const updatePost = async (
 export const getUserPosts = async (userId: string) => {
   return await Post.find({ authorId:  new Types.ObjectId(userId) })
     .sort({ createdAt: -1 })
+    .populate("authorId", "name nickName portfolioImage")
     .limit(20);
 };
