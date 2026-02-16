@@ -9,6 +9,7 @@ import userRoutes from "./modules/users/users.routes";
 import postRoutes from "./modules/posts/posts.routes";
 import followRoutes from "./modules/follows/follows.routes";
 import groupRoutes from "./modules/groups/groups.routes";
+import notificationsRoutes from "./modules/notifications/notifictions.routes"
 import { authUser } from "./middleware/auth.middleware";
 import swaggerui from "swagger-ui-express";
 import swaggerDocument from "./docs/swagger.json";
@@ -35,6 +36,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/follows", followRoutes);
 app.use("/api/groups", groupRoutes);
+app.use("/api/notifications", notificationsRoutes)
 app.use(handleErrors);
 app.use("/docs",authUser,swaggerui.serve, swaggerui.setup(swaggerDocument));
 
