@@ -3,9 +3,9 @@ dotenv.config();
 import app from "./app";
 import { connect } from "./config/db";
 import http from "http";
-
+import { initServer } from './config/socket
 const server = http.createServer(app);
-
+initServer(server)
 const startServer = () => {
   const port = process.env.PORT || 3000;
 
