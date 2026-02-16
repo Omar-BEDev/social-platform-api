@@ -74,6 +74,7 @@ export const feed = async (userId: Types.ObjectId) => {
         ]
     })
     .sort({createdAt : -1})
+    .populate("authorId","name nickName portfolioImage")
     .limit(20)
     return posts;
     }
