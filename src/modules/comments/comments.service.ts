@@ -46,16 +46,16 @@ export const createComment = async (
 
 export const updateComment = async (
   userId: string,
-  postId: string,
+  commentId: string,
   newContent: string,
 ) => {
-  const comment = await Comment.findOne({ postId });
+  const comment = await Comment.findOne({ commentId});
 
   if (!comment) {
     throw new ApiError("Comment not found", 404);
   }
 
-  if (comment.authorId.toString() !== userId) {
+  if (comment.authorId.toString() !== userId ) {
     throw new ApiError("You are not authorized to update this comment", 403);
   }
 
@@ -65,8 +65,9 @@ export const updateComment = async (
   return { message: "Comment updated successfully" };
 };
 
-export const deleteComment = async (userId: string, postId: string) => {
-  const comment = await Comment.findOne({ postId });
+export const deleteComment = async (userId: string, commentId: string) => {
+  const commentMongoId = new Types.ObjectId(commentId);
+  const comment = await Comment.findOne({ commentMongoId });
 
   if (!comment) {
     throw new ApiError("Comment not found", 404);
@@ -79,13 +80,14 @@ export const deleteComment = async (userId: string, postId: string) => {
     throw new ApiError("You are not authorized to delete this comment", 403);
   }
 
-  await Comment.deleteOne({ postId });
+  await Comment.deleteOne({ commentMongoId });
 
   return { message: "Comment deleted successfully" };
 };
 
-export const getComments = async (postId: string) => {
-  const comments = await Comment.find({ postId })
+export const getComments = async (commentId: string) => {
+  const commentMongoId = new Types.ObjectId(commentId);
+  const comments = await Comment.find({  commentMongoId })
   .populate("authorId", "name nickname portfolioImage")
   .limit(20);
   return comments;

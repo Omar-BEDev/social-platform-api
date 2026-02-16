@@ -80,6 +80,6 @@ export const getGroupPosts = async (groupId: string, userId: Types.ObjectId) => 
     if (isMember.isBanned) {
         throw new ApiError( 'You are banned from this group',403);
     }
-    const posts = await Post.find({ groupTag: groupId });
+    const posts = await Post.find({ groupId: groupId });
     return posts;
 }

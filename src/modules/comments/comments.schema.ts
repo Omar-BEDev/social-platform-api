@@ -6,7 +6,7 @@ export const commentContentSchema = z.object({
 });
 
 export const commentParamsSchema = z.object({
-  postId: z.string().refine((val) => mongoose.Types.ObjectId.isValid(val)),
+  commentId: z.string().refine((val) => mongoose.Types.ObjectId.isValid(val)),
   groupId: z
     .string()
     .optional()

@@ -39,7 +39,7 @@ export const deleteComment = async (req: AuthRequest, res: Response) => {
 };
 
 export const getComments = async (req: Request, res: Response) => {
-  const { postId } = req.params;
-  const comments = await commentService.getComments(postId);
+  const { commentId } = req.params;
+  const comments = await commentService.getComments(commentId);
   res.status(200).json(comments);
 };

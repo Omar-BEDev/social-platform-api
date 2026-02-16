@@ -24,7 +24,7 @@ router.post(
   createComment,
 );
 router.put(
-  "/:postId/:groupId?",
+  "/:commentId/:groupId?",
   authUser,
   validationCommentContent,
   validationCommentParams,
@@ -32,11 +32,11 @@ router.put(
   updateComment,
 );
 router.delete(
-  "/:postId/:groupId",
+  "/:commentId/:groupId",
   authUser,
   validationCommentParams,
   deleteComment,
 );
-router.get("/:postId", authUser, validationCommentParams, getComments);
+router.get("/:commentId", authUser, validationCommentParams, getComments);
 
 export default router;
