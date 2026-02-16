@@ -18,7 +18,7 @@ export const postSchema = z.object({
 });
 
 export const postParamsSchema = z.object({
-  id: objectIdSchema,
+  userId: objectIdSchema,
 });
 
 export const postContentSchema = z.object({
