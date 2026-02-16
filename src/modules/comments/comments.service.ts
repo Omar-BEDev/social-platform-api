@@ -86,7 +86,7 @@ export const deleteComment = async (userId: string, postId: string) => {
 
 export const getComments = async (postId: string) => {
   const comments = await Comment.find({ postId })
-  .populate("authorId", "name nickName portfolioImage")
+  .populate("authorId", "name nickname portfolioImage")
   .limit(20);
   return comments;
 };
