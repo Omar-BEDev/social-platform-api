@@ -38,7 +38,7 @@ export const makeUserData = (body: any) => {
 export const signup = async (userData: IUser) => {
   const user = new User(userData);
   await user.save();
-  const token = jwt.sign({ id: user._id }, JWT_SECRET as string,expiresIn: '1h');
+  const token = jwt.sign({ id: user._id }, JWT_SECRET as string,{expiresIn: '1h'});
   return { message: "User created successfully", token };
 };
 
@@ -51,7 +51,7 @@ export const login = async (body: Pick<IUser, "email" | "password">) => {
   if (!isMatch) {
     throw new ApiError("Invalid credentials", 401);
   }
-  const token = jwt.sign({ id: user._id }, JWT_SECRET as string);
+  const token = jwt.sign({ id: user._id }, JWT_SECRET as string,{expiresIn: '1h'});
   return { message: "Logged in successfully", token };
 };
 
