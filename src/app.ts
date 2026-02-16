@@ -21,7 +21,7 @@ const app = express();
 // Middleware
 app.use(helmet());
 app.use(cors({
-  origin : "https://programming-smp.lovable.app", 
+  origin : "*", 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
