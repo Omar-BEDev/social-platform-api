@@ -51,7 +51,7 @@ export const login = async (body: Pick<IUser, "email" | "password">) => {
   if (!isMatch) {
     throw new ApiError("Invalid credentials", 401);
   }
-  const token = jwt.sign({ _id: user._id }, JWT_SECRET as string);
+  const token = jwt.sign({ id: user._id }, JWT_SECRET as string);
   return { message: "Logged in successfully", token };
 };
 
