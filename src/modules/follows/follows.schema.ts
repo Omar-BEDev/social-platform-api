@@ -11,7 +11,7 @@ export const objectIdSchema = z.string().refine(
 );
 
 export const followParamsSchema = z.object({
-  id: objectIdSchema,
+  userId: objectIdSchema,
 });
 
 export const authRequestSchema = z.object({
