@@ -14,6 +14,8 @@ import { authUser } from "./middleware/auth.middleware";
 import swaggerui from "swagger-ui-express";
 import swaggerDocument from "./docs/swagger.json";
 import handleErrors from "./middleware/error.middleware";
+import commentRouter from "./modules/comments/comments.route";
+
 
 dotenv.config();
 
@@ -38,6 +40,8 @@ app.use("/api/posts", postRoutes);
 app.use("/api/follows", followRoutes);
 app.use("/api/groups", groupRoutes);
 app.use("/api/notifications", notificationsRoutes)
+app.use("/api/comments", commentRouter)
+
 app.use(handleErrors);
 app.use("/docs",authUser,swaggerui.serve, swaggerui.setup(swaggerDocument));
 
