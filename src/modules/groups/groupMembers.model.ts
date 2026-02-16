@@ -1,7 +1,7 @@
 import { Schema, model, InferSchemaType, Types, Document } from "mongoose";
 
 const groupMemberSchema = new Schema({
-  memberId: { type: Types.ObjectId, required: true },
+  memberId: { type: Types.ObjectId, required: true , ref : "User"},
   groupId: { type: Types.ObjectId, required: true },
   isBanned: { type: Boolean, default: false },
   role: { type: String, default: "member" },

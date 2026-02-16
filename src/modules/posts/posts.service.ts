@@ -34,6 +34,7 @@ export const deletePost = async (postId: string, userId: Types.ObjectId) => {
     throw new ApiError("You are not authorized to delete this post", 403);
   }
   await Post.findByIdAndDelete(postId);
+  await Post.deleteMany({ postId });
 };
 
 export const updatePost = async (

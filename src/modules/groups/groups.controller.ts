@@ -39,4 +39,12 @@ export const createGroup = async (req: AuthRequest, res: Response) => {
   res.status(201).json(newGroup);
 };
 
-export const joinGroup = (req: Request, res: Response) => {};
+export const joinGroup = async (req: AuthRequest, res: Response) => {
+  if (!req.user) throw new ApiError("User not authenticated", 403);
+  const { groupId } = req.params;
+  const memberId = req.user.id;
+  const member = await groupService.joinGroup(groupId, memberId);
+  if(member.memberId && typeof member.memberId === 'object' && 'name' in member.memberId){
+  res.status(200).json({ message: "Group joined successfully" ,name: member.memberId.name});
+  }
+};

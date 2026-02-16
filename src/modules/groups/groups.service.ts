@@ -83,3 +83,14 @@ export const getGroupPosts = async (groupId: string, userId: Types.ObjectId) => 
     const posts = await Post.find({ groupId: groupId });
     return posts;
 }
+
+export const joinGroup = async(groupId : string, userId : Types.ObjectId) => {
+  const newMember = await new GroupMember({
+    memberId : userId,
+    groupId : groupId,
+    role : "member",
+  })
+  await newMember.populate("memberId","name nickname portfolioImage")
+  await newMember.save()
+  return newMember
+}
