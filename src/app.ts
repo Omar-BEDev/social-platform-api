@@ -23,7 +23,7 @@ app.use(helmet());
 app.use(cors({
   origin : "https://programming-smp.lovable.app", 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(mongoSanitize());
 app.use(express.json());
