@@ -43,13 +43,3 @@ export const validateAdminCommentParams = (
   next();
 };
 
-export const isAdmin = (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction,
-) => {
-  if (req.user?.role !== "admin") {
-    throw new ApiError("Unauthorized: You are not an admin", 403);
-  }
-  next();
-};

@@ -13,6 +13,7 @@ import {
   deleteGroupComment,
 } from "./admin.controller";
 import { creationLimiter } from "../../middleware/rate-limit";
+import { isGroupAdmin } from "./admin.middleware";
 
 const router = Router();
 
@@ -20,21 +21,21 @@ const router = Router();
 router.put(
   "/:groupId/:userId/ban",
   authUser,
-  isAdmin,
+  isGroupAdmin,
   validateAdminParams,
   bannedGroupMember,
 );
 router.put(
   "/:groupId/:userId/role",
   authUser,
-  isAdmin,
+  isGroupAdmin,
   validateAdminParams,
   changeMemberRole,
 );
 router.post(
   "/:groupId",
   authUser,
-  isAdmin,
+  isGroupAdmin,
   validateAdminGroupParams,
   creationLimiter,
   changeAccespost,
@@ -42,7 +43,7 @@ router.post(
 router.post(
   "/:authorId/:groupId",
   authUser,
-  isAdmin,
+  isGroupAdmin,
   validateAdminCommentParams,
   deleteGroupComment,
 );
