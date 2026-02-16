@@ -68,6 +68,7 @@ export const feed = async (userId: Types.ObjectId) => {
 
     const posts = await Post.find({
         $or : [
+            {authorId : userId }, 
             {authorId : {$in : followsIds}},
             {groupId : {$in : groupsIds}}
         ]
