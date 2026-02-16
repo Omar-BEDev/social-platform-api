@@ -5,12 +5,11 @@ import {
   changePostAccess,
   deleteGroupComment as deleteGroupCommentService,
 } from "./admin.service";
-import { types } from "util";
 import { Types } from "mongoose";
 
 export const bannedGroupMember = async (req: Request, res: Response) => {
-  const { groupId, userId } = req.body;
-  const result = await banUser(groupId, userId);
+  const { groupId, userId } = req.params;
+  const result = await banUser(new Types.ObjectId(groupId), new Types.ObjectId(userId));
   res.status(200).json(result);
 };
 export const changeMemberRole = async (req: Request, res: Response) => {

@@ -49,7 +49,7 @@ export const updateComment = async (
   commentId: string,
   newContent: string,
 ) => {
-  const comment = await Comment.findOne({ commentId});
+  const comment = await Comment.findById( commentId);
 
   if (!comment) {
     throw new ApiError("Comment not found", 404);
@@ -66,8 +66,7 @@ export const updateComment = async (
 };
 
 export const deleteComment = async (userId: string, commentId: string) => {
-  const commentMongoId = new Types.ObjectId(commentId);
-  const comment = await Comment.findOne({ commentMongoId });
+  const comment = await Comment.findById(commentId);
 
   if (!comment) {
     throw new ApiError("Comment not found", 404);
@@ -80,14 +79,13 @@ export const deleteComment = async (userId: string, commentId: string) => {
     throw new ApiError("You are not authorized to delete this comment", 403);
   }
 
-  await Comment.deleteOne({ commentMongoId });
+  await Comment.deleteOne({ commentId });
 
   return { message: "Comment deleted successfully" };
 };
 
-export const getComments = async (commentId: string) => {
-  const commentMongoId = new Types.ObjectId(commentId);
-  const comments = await Comment.find({  commentMongoId })
+export const getComments = async (postId: string) =>{
+  const comments = await Comment.find({postId: postId })
   .populate("authorId", "name nickname portfolioImage")
   .limit(20);
   return comments;
