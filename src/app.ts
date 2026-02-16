@@ -28,6 +28,7 @@ app.use(cors({
 }));
 app.use(mongoSanitize());
 app.use(express.json());
+app.set('trust proxy', 1);
 app.use(generalLimiter);
 
 //API Routes
