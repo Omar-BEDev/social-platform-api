@@ -21,3 +21,10 @@ export const feedPosts = async (req: AuthRequest, res: Response) => {
   const posts = await userService.feed(userId);
   res.status(200).json(posts);
 };
+
+export const getUserInfo = (req: AuthRequest, res: Response) => {
+  if (!req.user) throw new ApiError("User not authenticated", 403);
+  const userId = req.user.id 
+  const userInfo = userService.getUserById(userId)
+  res.status(200).json(userInfo)
+}

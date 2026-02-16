@@ -78,3 +78,8 @@ export const feed = async (userId: Types.ObjectId) => {
     .limit(20)
     return posts;
     }
+
+    export const getUserById = (userId : Types.ObjectId) => {
+        const userInfo = User.findById(userId).select("-password").lean()
+        return userInfo
+    }
