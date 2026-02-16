@@ -15,7 +15,6 @@ export const groupParamsSchema = z.object({
 });
 
 export const groupPostSchema = z.object({
-  authorId: objectIdSchema,
   content: z.string().min(1).max(2000),
   languageTag: z.array(z.string()).min(1).max(6),
   frameworkTag: z.array(z.string()).max(3).optional(),
