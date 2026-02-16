@@ -3,7 +3,6 @@ import { authUser } from "../../middleware/auth.middleware";
 import {
   validateAdminParams,
   validateAdminGroupParams,
-  isAdmin,
   validateAdminCommentParams,
 } from "./admin.validation";
 import {
