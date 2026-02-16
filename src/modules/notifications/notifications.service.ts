@@ -1,5 +1,5 @@
 import { getIO } from "../../config/socket";
-import { catchSocketError } from "../../utils/socketCatchErr";
+import { catchError } from "../../utils/catchErr";
 import User from "../users/users.model";
 import { INotification } from "./notifications.model";
 import { Notification } from "./notifications.model";
@@ -9,7 +9,7 @@ export const sendAndSaveNotification = async (data: INotification) => {
   const newNotification = await Notification.create(data);
 
   const io = getIO();
-  catchSocketError(() =>
+  catchError(() =>
     io
       .to(newNotification.recipientId)
       .emit("new_notification", newNotification),

@@ -1,4 +1,4 @@
-export const catchSocketError = (fn: Function): void => {
+export const catchError = (fn: Function): void => {
   try {
     fn();
   } catch (error) {

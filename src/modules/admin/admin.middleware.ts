@@ -2,6 +2,7 @@ import { NextFunction, Response } from "express";
 import { AuthRequest } from "../../utils/payload";
 import { ApiError } from "../../utils/ApiError";
 import GroupMember from "../groups/groupMembers.model";
+import { catchError } from "../../utils/catchErr";
 
 export const isGroupAdmin = async (
     req: AuthRequest,
@@ -16,3 +17,4 @@ export const isGroupAdmin = async (
     if(userRole.role !== "admin") throw new ApiError("User is not admin", 403)
     next()
 }
+catchError(isGroupAdmin)
