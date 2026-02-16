@@ -11,7 +11,7 @@ export const objectIdSchema = z.string().refine(
 );
 
 export const groupParamsSchema = z.object({
-  id: objectIdSchema,
+  groupId: objectIdSchema,
 });
 
 export const groupPostSchema = z.object({

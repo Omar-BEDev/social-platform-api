@@ -19,7 +19,7 @@ const router = Router();
 router.post("/", authUser, validateGroupReqbody, createGroup);
 router.post("/:groupId", authUser, joinGroup);
 router.post(
-  "/:groupeId/post",
+  "/:groupId/post",
   authUser,
   validateGroupParams,
   validateGroupPostData,
