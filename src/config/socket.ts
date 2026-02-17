@@ -22,9 +22,7 @@ export const initServer = (server: HttpServer) => {
   io = new Server(server, {
     cors: { origin: "*" },
   });
-  catchError(() => {
     io.use(authSocketUser)
-  })
   loginSocketUser()
   return io;
 };
