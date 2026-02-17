@@ -4,7 +4,7 @@ import { ApiError } from "../../utils/ApiError";
 import GroupMember from "../groups/groupMembers.model";
 import { catchError } from "../../utils/catchErr";
 
-export const isGroupAdmin = async (
+export const isGroupAdmin = catchError(async (
     req: AuthRequest,
     res: Response,
     next: NextFunction
@@ -16,5 +16,5 @@ export const isGroupAdmin = async (
     if(!userRole) throw new ApiError("User is not a member of the group", 403)
     if(userRole.role !== "admin") throw new ApiError("User is not admin", 403)
     next()
-}
-catchError(isGroupAdmin)
+})
+
