@@ -16,7 +16,7 @@ const router = Router();
 
 // Comments routes
 router.post(
-  "/:postId/:groupId?",
+["/:postId","/:postId/:groupId"],
   authUser,
   validationCommentContent,
   validationCommentParams,
@@ -24,7 +24,7 @@ router.post(
   createComment,
 );
 router.put(
-  "/:commentId/:groupId?",
+  ["/:commentId","/:commentId/:groupId"],
   authUser,
   validationCommentContent,
   validationCommentParams,
