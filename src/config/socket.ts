@@ -1,9 +1,6 @@
 import { Server } from "socket.io";
 import { Server as HttpServer } from "http";
-import { ApiError } from "../utils/ApiError";
-import  jwt  from "jsonwebtoken";
 import { authSocketUser } from "../middleware/socket.middleware";
-import { catchError } from "../utils/catchErr";
 let io: Server;
 
 const loginSocketUser = () => {
