@@ -1,12 +1,12 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Social Platform API - Master Documentation",
-    "version": "1.3.0",
-    "description": "Complete Technical Contract. Includes all Admin moderation, Group management, and Social Graph endpoints."
+    "title": "Social Platform API - Final",
+    "version": "1.3.1",
+    "description": "Complete documentation covering all edge cases, including group-specific comments and admin controls."
   },
   "servers": [
-    { "url": "http://localhost:3000", "description": "Local Dev Server" }
+    { "url": "http://localhost:3000", "description": "Local Server" }
   ],
   "components": {
     "securitySchemes": {
@@ -19,7 +19,7 @@
         "properties": {
           "name": { "type": "string" },
           "nickname": { "type": "string" },
-          "email": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
           "password": { "type": "string" },
           "birthday": { "type": "string", "format": "date" },
           "language": { "type": "array", "items": { "type": "string" } },
@@ -31,7 +31,7 @@
         "type": "object",
         "required": ["content", "languageTag"],
         "properties": {
-          "content": { "type": "string" },
+          "content": { "type": "string", "maxLength": 2000 },
           "languageTag": { "type": "array", "items": { "type": "string" } },
           "frameworkTag": { "type": "array", "items": { "type": "string" } }
         }
@@ -44,41 +44,49 @@
           "description": { "type": "string" },
           "icon": { "type": "string" }
         }
+      },
+      "CommentBody": {
+        "type": "object",
+        "required": ["content"],
+        "properties": {
+          "content": { "type": "string", "maxLength": 500 }
+        }
       }
     }
   },
   "security": [{ "bearerAuth": [] }],
+  "tags": [
+    { "name": "Authentication" },
+    { "name": "Users" },
+    { "name": "Posts" },
+    { "name": "Groups" },
+    { "name": "Follows" },
+    { "name": "Comments" },
+    { "name": "Admin" },
+    { "name": "Notifications" }
+  ],
   "paths": {
     "/api/users/signup": {
-      "post": { "tags": ["Auth"], "summary": "Register", "security": [], "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserSignup" } } } }, "responses": { "201": { "description": "Created" } } }
+      "post": { "tags": ["Authentication"], "summary": "Register", "security": [], "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserSignup" } } } }, "responses": { "201": { "description": "Created" } } }
     },
     "/api/users/login": {
-      "post": { "tags": ["Auth"], "summary": "Login", "security": [], "requestBody": { "content": { "application/json": { "schema": { "type": "object", "properties": { "email": { "type": "string" }, "password": { "type": "string" } } } } } }, "responses": { "200": { "description": "OK" } } }
+      "post": { "tags": ["Authentication"], "summary": "Login", "security": [], "requestBody": { "content": { "application/json": { "schema": { "type": "object", "properties": { "email": { "type": "string" }, "password": { "type": "string" } } } } } }, "responses": { "200": { "description": "OK" } } }
     },
     "/api/users/me": {
-      "get": { "tags": ["Users"], "summary": "Get My Profile", "responses": { "200": { "description": "OK" } } }
+      "get": { "tags": ["Users"], "summary": "Get Profile", "responses": { "200": { "description": "OK" } } }
     },
     "/api/users/feed": {
-      "get": { "tags": ["Users"], "summary": "Personalized Feed", "responses": { "200": { "description": "OK" } } }
+      "get": { "tags": ["Users"], "summary": "Get Feed", "responses": { "200": { "description": "OK" } } }
     },
     "/api/posts": {
       "post": { "tags": ["Posts"], "summary": "Create Post", "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PostCreate" } } } }, "responses": { "201": { "description": "OK" } } }
     },
     "/api/posts/{postId}": {
-      "put": { "tags": ["Posts"], "summary": "Update Post", "parameters": [{ "name": "postId", "in": "path", "required": true }], "responses": { "200": { "description": "OK" } } },
+      "put": { "tags": ["Posts"], "summary": "Update Post", "parameters": [{ "name": "postId", "in": "path", "required": true }], "requestBody": { "content": { "application/json": { "schema": { "type": "object", "properties": { "content": { "type": "string" } } } } } }, "responses": { "200": { "description": "OK" } } },
       "delete": { "tags": ["Posts"], "summary": "Delete Post", "parameters": [{ "name": "postId", "in": "path", "required": true }], "responses": { "204": { "description": "Deleted" } } }
     },
     "/api/posts/{userId}/posts": {
       "get": { "tags": ["Posts"], "summary": "Get User Posts", "parameters": [{ "name": "userId", "in": "path", "required": true }], "responses": { "200": { "description": "OK" } } }
-    },
-    "/api/follows/{userId}/follow": {
-      "post": { "tags": ["Follows"], "summary": "Follow", "parameters": [{ "name": "userId", "in": "path", "required": true }], "responses": { "201": { "description": "OK" } } }
-    },
-    "/api/follows/{userId}/unfollow": {
-      "post": { "tags": ["Follows"], "summary": "Unfollow", "parameters": [{ "name": "userId", "in": "path", "required": true }], "responses": { "200": { "description": "OK" } } }
-    },
-    "/api/follows": {
-      "get": { "tags": ["Follows"], "summary": "My Connections List", "responses": { "200": { "description": "OK" } } }
     },
     "/api/groups": {
       "post": { "tags": ["Groups"], "summary": "Create Group", "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/GroupCreate" } } } }, "responses": { "201": { "description": "OK" } } }
@@ -87,33 +95,48 @@
       "post": { "tags": ["Groups"], "summary": "Join Group", "parameters": [{ "name": "groupId", "in": "path", "required": true }], "responses": { "200": { "description": "OK" } } }
     },
     "/api/groups/{groupId}/post": {
-      "post": { "tags": ["Groups"], "summary": "Post in Group", "parameters": [{ "name": "groupId", "in": "path", "required": true }], "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PostCreate" } } } }, "responses": { "201": { "description": "OK" } } }
+      "post": { "tags": ["Groups"], "summary": "Create Group Post", "parameters": [{ "name": "groupId", "in": "path", "required": true }], "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PostCreate" } } } }, "responses": { "201": { "description": "OK" } } }
     },
     "/api/groups/{groupId}/posts": {
       "get": { "tags": ["Groups"], "summary": "Get Group Posts", "parameters": [{ "name": "groupId", "in": "path", "required": true }], "responses": { "200": { "description": "OK" } } }
     },
+    "/api/follows/{userId}/follow": {
+      "post": { "tags": ["Follows"], "summary": "Follow User", "parameters": [{ "name": "userId", "in": "path", "required": true }], "responses": { "201": { "description": "OK" } } }
+    },
+    "/api/follows/{userId}/unfollow": {
+      "post": { "tags": ["Follows"], "summary": "Unfollow User", "parameters": [{ "name": "userId", "in": "path", "required": true }], "responses": { "200": { "description": "OK" } } }
+    },
+    "/api/follows": {
+      "get": { "tags": ["Follows"], "summary": "My Connections", "responses": { "200": { "description": "OK" } } }
+    },
+    "/api/comments/{postId}": {
+      "get": { "tags": ["Comments"], "summary": "Get Post Comments", "parameters": [{ "name": "postId", "in": "path", "required": true }], "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Comments"], "summary": "Comment on Public Post", "parameters": [{ "name": "postId", "in": "path", "required": true }], "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommentBody" } } } }, "responses": { "201": { "description": "OK" } } }
+    },
+    "/api/comments/{postId}/{groupId}": {
+      "post": { "tags": ["Comments"], "summary": "Comment on Group Post", "parameters": [{ "name": "postId", "in": "path", "required": true }, { "name": "groupId", "in": "path", "required": true }], "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommentBody" } } } }, "responses": { "201": { "description": "OK" } } }
+    },
+    "/api/comments/{commentId}": {
+      "put": { "tags": ["Comments"], "summary": "Update Public Comment", "parameters": [{ "name": "commentId", "in": "path", "required": true }], "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommentBody" } } } }, "responses": { "200": { "description": "OK" } } }
+    },
+    "/api/comments/{commentId}/{groupId}": {
+      "put": { "tags": ["Comments"], "summary": "Update Group Comment", "parameters": [{ "name": "commentId", "in": "path", "required": true }, { "name": "groupId", "in": "path", "required": true }], "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CommentBody" } } } }, "responses": { "200": { "description": "OK" } } },
+      "delete": { "tags": ["Comments"], "summary": "Delete Group Comment (User)", "parameters": [{ "name": "commentId", "in": "path", "required": true }, { "name": "groupId", "in": "path", "required": true }], "responses": { "200": { "description": "OK" } } }
+    },
     "/api/admin/{groupId}/{userId}/ban": {
-      "put": { "tags": ["Admin"], "summary": "Ban Member", "parameters": [{ "name": "groupId", "in": "path", "required": true }, { "name": "userId", "in": "path", "required": true }], "responses": { "200": { "description": "OK" } } }
+      "put": { "tags": ["Admin"], "summary": "Ban User", "parameters": [{ "name": "groupId", "in": "path", "required": true }, { "name": "userId", "in": "path", "required": true }], "responses": { "200": { "description": "OK" } } }
     },
     "/api/admin/{groupId}/{userId}/role": {
-      "put": { "tags": ["Admin"], "summary": "Promote to Admin", "parameters": [{ "name": "groupId", "in": "path", "required": true }, { "name": "userId", "in": "path", "required": true }], "responses": { "200": { "description": "OK" } } }
+      "put": { "tags": ["Admin"], "summary": "Promote Member", "parameters": [{ "name": "groupId", "in": "path", "required": true }, { "name": "userId", "in": "path", "required": true }], "responses": { "200": { "description": "OK" } } }
     },
     "/api/admin/{groupId}": {
-      "post": { "tags": ["Admin"], "summary": "Toggle Group Post Access", "parameters": [{ "name": "groupId", "in": "path", "required": true }], "responses": { "200": { "description": "OK" } } }
+      "post": { "tags": ["Admin"], "summary": "Change Post Access", "parameters": [{ "name": "groupId", "in": "path", "required": true }], "responses": { "200": { "description": "OK" } } }
     },
     "/api/admin/{authorId}/{groupId}": {
       "post": { "tags": ["Admin"], "summary": "Admin Delete Comment", "parameters": [{ "name": "authorId", "in": "path", "required": true }, { "name": "groupId", "in": "path", "required": true }], "responses": { "200": { "description": "OK" } } }
     },
-    "/api/comments/{postId}": {
-      "get": { "tags": ["Comments"], "summary": "Get Post Comments", "parameters": [{ "name": "postId", "in": "path", "required": true }], "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Comments"], "summary": "Add Comment", "parameters": [{ "name": "postId", "in": "path", "required": true }], "requestBody": { "content": { "application/json": { "schema": { "type": "object", "properties": { "content": { "type": "string" } } } } } }, "responses": { "201": { "description": "OK" } } }
-    },
-    "/api/comments/{commentId}": {
-      "put": { "tags": ["Comments"], "summary": "Update My Comment", "parameters": [{ "name": "commentId", "in": "path", "required": true }], "responses": { "200": { "description": "OK" } } },
-      "delete": { "tags": ["Comments"], "summary": "Delete My Comment", "parameters": [{ "name": "commentId", "in": "path", "required": true }], "responses": { "200": { "description": "OK" } } }
-    },
     "/api/notifications": {
-      "get": { "tags": ["Notifications"], "summary": "My History", "responses": { "200": { "description": "OK" } } }
+      "get": { "tags": ["Notifications"], "summary": "Get Notifications", "responses": { "200": { "description": "OK" } } }
     }
   }
 }
